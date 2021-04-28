@@ -1,0 +1,121 @@
+
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+   
+    <div class="container">
+  <h2>Thùng Rác Của Tôi</h2>
+  <p><a href="/me/stored/products">Quay lại</a></p>            
+  <table class="table table-success table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>PriceOld</th>      
+        <th>PriceCurrent</th>
+        <th>Brand</th>
+        <th>OriginName</th>
+        <th></th>
+        <th></th>
+
+
+        
+      </tr>
+    </thead>
+    <tbody>
+        {{#each product }}
+      <tr>
+        <th>{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.price_old}}</td>
+        <td>{{this.price_current}}</td>
+        <td>{{this.brand}}</td>
+        <td>{{this.origin_name}}</td>
+
+        <td><a href=""><button type="button" class="btn btn-success btn-restore" data-id="{{this._id}}" style="width:100px"><span class="oi oi-share-boxed"></span> Khôi Phục</button></a></td>
+        <td><a><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-course-modal" data-bs-whatever="{{this._id}}"><span class="oi oi-delete"></span> Xóa</button></a></td>
+
+      </tr>
+      {{else}}
+        <tr>
+            
+          <th colspan="5" class="text-center">
+              Thùng rác trống. <a href="/me/stored/products">Quay lại</a>
+          </th>
+        </tr>
+      {{/each  }}
+    </tbody>
+  </table>
+</div>
+
+<form name = "delete-form" method="POST" action=""></form>
+<form name = "restore-form" method="POST" action=""></form>
+
+<!-- Modal -->
+<div class="modal fade" id="delete-course-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Xóa Khóa Học</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn chăc chắn muốn xóa?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button  id = "delete" type="button" class="btn btn-primary" >Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+      document.addEventListener("DOMContentLoaded", function() {
+            var courseId;
+            var btnDeleteCourse = document.getElementById('delete');
+            var formDelete = document.forms['delete-form']; 
+            var btnRestore = $('.btn-restore');
+            var formRestore = document.forms['restore-form'];
+            
+       $('#delete-course-modal').on('show.bs.modal', function (event) {
+                                    var button = event.relatedTarget 
+  courseId = button.getAttribute('data-bs-whatever')
+  
+
+  
+});
+           btnRestore.click(function(e){
+             e.preventDefault();
+             var btnIdRestore = $(this).data('id');
+            formRestore.action = '/products/' + btnIdRestore + '/restore?_method=PATCH';
+            formRestore.submit();
+
+           }) 
+             
+           
+
+
+         
+          btnDeleteCourse.onclick = function() {
+             formDelete.action = '/products/' + courseId + '/force?_method=DELETE';
+             formDelete.submit();
+          }
+      });
+
+</script>
+
+
+
+ 
+  
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  

@@ -1,0 +1,161 @@
+
+
+   
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    
+
+<div class="container">
+  <h2 style="text-align: center;">Sản phẩm của tôi</h2>
+  <form method="POST" action="/courses/handle-form-action" name="container-form" >
+  <p><a href="/me/trash/products">Thùng Rác({{countdeleted }})</a></p>  
+<div class="mt-4 d-flex align-items-center">
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+        <label class="form-check-label" for="checkbox-all">
+          Chọn tất cả
+        </label>
+        </div>
+        <select  name ="action" required class="form-select form-control-sm " id="select-set" style="width:200px;margin-left:10px;margin-right:10px">
+                <option value="">-- Hành Động --</option>
+                <option value="delete">Xóa</option>
+               
+        </select>
+
+         <button class="btn btn-primary btn-sm check-all-submit-btn disabled" id="btn-set" value="disable">Áp dụng</button>
+</div>  
+        
+  <table class="table table-success table-striped">
+    <thead>
+      <tr>
+        
+        <th></th>
+        <th>STT</th>       
+        <th>
+          Name 
+         {{{sortable 'name' _sort}}}
+        </th>
+        <th>PriceOld
+         {{{sortable 'price_old' _sort}}}
+                  
+        </th>
+         <th>PriceCurrent
+         {{{sortable 'price_current' _sort}}}
+               
+        </th> <th>Brand
+         {{{sortable 'brand' _sort}}}
+                  
+        </th> <th>OriginName
+         {{{sortable 'origin_name' _sort}}}
+              
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#each product  }}
+      <tr>
+        
+        <td><input class="form-check-input" type="checkbox" value="{{this._id}}" name="courseIds[]"></td>
+        <th>{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.price_old}}</td>
+        <td>{{this.price_current}}</td>
+        <td>{{this.brand}}</td>
+        <td>{{this.origin_name}}</td>
+
+
+        <td><a href="/products/{{this._id}}/edit"><button type="button" class="btn btn-success" ><span class="oi oi-wrench"></span> Sửa</button></a></td>
+        
+        <td><a><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-course-modal" data-bs-whatever="{{this._id}}"> <span class="oi oi-delete"></span> Xóa</button></a></td>
+      </tr>
+      {{else}}
+        <tr>
+          <th colspan="5" class="text-center">
+              Bạn chưa có khóa học nào. <a href="/productshẻ/create">Đăng khóa học</a>
+          </th>
+        </tr>
+      {{/each  }}
+    </tbody>
+  </table>
+</div>
+</form>
+<form name = "delete-form" method="POST" action=""></form>
+
+<!-- Modal -->
+<div class="modal fade" id="delete-course-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"  >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Xóa Khóa Học</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn chăc chắn muốn xóa?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button  id = "delete" type="button" class="btn btn-primary" >Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <script>
+      document.addEventListener("DOMContentLoaded", function() {
+            var courseId;
+            var btnDeleteCourse = document.getElementById('delete');
+             var formDelete = document.forms['delete-form']; 
+             var btnCheckBoxAll = $('#checkbox-all');
+           var courseItemCheckbox = $('input[name="courseIds[]"]');
+            var btnSubmitCheckAll = $(' .check-all-submit-btn');
+           
+       $('#delete-course-modal').on('show.bs.modal', function (event) {
+                                    var button = event.relatedTarget 
+  courseId = button.getAttribute('data-bs-whatever')
+  
+
+  
+});
+         
+          btnDeleteCourse.onclick = function() {
+             formDelete.action = '/products/' + courseId + '?_method=DELETE';
+             formDelete.submit();
+          }
+          btnCheckBoxAll.change(function(e) {
+              var isCheckAll = $(this).prop('checked');
+              courseItemCheckbox.prop('checked',isCheckAll)
+              renderCheckAllSubmitBtn()
+          })
+          courseItemCheckbox.change(function(e) {
+             var isCheckAll = courseItemCheckbox.length === $('input[name = "courseIds[]"]:checked').length;
+             btnCheckBoxAll.prop('checked',isCheckAll);
+             renderCheckAllSubmitBtn()
+          })
+          ///Yes/No submit
+          
+          ////function change disable/enable
+          function  renderCheckAllSubmitBtn() {
+            var isCheckCount =  $('input[name = "courseIds[]"]:checked').length;
+            if(isCheckCount) {
+                btnSubmitCheckAll.removeClass('disabled');
+            }
+            else{
+              btnSubmitCheckAll.addClass('disabled');
+            }
+          }
+      });
+
+</script>
+
+ 
+  
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ 
